@@ -1,0 +1,14 @@
+name: Демонстрация Gitaction
+on:
+  push:
+jobs:
+  print-global-runner-env:
+    name: Print Global Runner Env 
+    runs-on: ubuntu-latest
+    steps:
+      - name: print env
+        run: printenv
+      - name: hello from global runner
+        run: echo "Hello from global runner"
+      - name: sleep 10m 
+        run: sleep 10m
