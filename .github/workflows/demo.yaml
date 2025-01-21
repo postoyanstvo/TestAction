@@ -1,9 +1,9 @@
-name: Демонстрация Github
+name: Демонстрация Gitaction
 on:
   push:
 jobs:
-  build-test:
-    name: Print env
+  print-global-runner-env:
+    name: Print Global Runner Env 
     runs-on: ubuntu-latest
     steps:
       - name: print env
