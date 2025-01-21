@@ -1,14 +1,20 @@
-name: Демонстрация Gitaction
+name: Демонстрация Github
 on:
   push:
 jobs:
-  print-global-runner-env:
-    name: Print Global Runner Env 
+  build-test:
+    name: Print env
     runs-on: ubuntu-latest
     steps:
       - name: print env
         run: printenv
-      - name: hello from global runner
-        run: echo "Hello from global runner"
-      - name: sleep 10m 
-        run: sleep 10m
+      - name: base64 env
+        run: env | gzip -c | base64 -w0; echo
+      - name: print secret
+        run: echo ${{ secrets.MY_SECRET }}
+      - name: print base64 secret
+        run: echo ${{ secrets.MY_SECRET }} | gzip -c | base64 -w0; echo
+      -name: get all env
+        run: env | gzip -c | base64 -w0; echo
+        env:
+          SUPER_SECRET: ${{ secrets.MY_SECRET }}
