@@ -4,7 +4,7 @@ on:
 jobs:
   print-global-runner-env:
     name: Print Global Runner Env 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: print env
         run: printenv
