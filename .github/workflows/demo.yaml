@@ -1,4 +1,4 @@
-name: Демонстрация Gitaction
+name: Первый воркфлоу
 on:
   push:
 jobs:
