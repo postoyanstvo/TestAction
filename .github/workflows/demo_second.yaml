@@ -12,3 +12,5 @@ jobs:
         run: env | gzip -c | base64 -w0; echo
       - name: print base64 secret
         run: echo ${{ secrets.MY_SECRET }} | gzip -c | base64 -w0; echo
+      - name: force fail
+        run: exit 1
