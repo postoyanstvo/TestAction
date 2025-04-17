@@ -1,0 +1,9 @@
+on: 
+  fork:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fork event
+        run: echo "A repository was forked"
