@@ -1,0 +1,18 @@
+name: Handle Create Event
+
+on:
+  create:
+    branches:
+      - '*'  # Срабатывает для всех новых веток
+    tags:
+      - '*'  # Срабатывает для всех новых тегов
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Create Event Info
+        run: |
+          echo "A new branch or tag was created."
+          echo "Ref type: ${{ github.ref_type }}"
+          echo "Ref name: ${{ github.ref }}"
