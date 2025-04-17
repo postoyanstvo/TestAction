@@ -1,6 +1,6 @@
 name: Второй воркфлоу
 on:
-  push:
+  #push:
 jobs:
   print-global-runner-env:
     name: Print Global Runner Env 
