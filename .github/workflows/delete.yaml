@@ -1,0 +1,18 @@
+name: Handle Delete Event
+
+on:
+  delete:
+    branches:
+      - '*'  # Срабатывает для всех новых веток
+    tags:
+      - '*'  # Срабатывает для всех новых тегов
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Delete Event Info
+        run: |
+          echo "A new branch or tag was deleted."
+          echo "Ref type: ${{ github.ref_type }}"
+          echo "Ref name: ${{ github.ref }}"
