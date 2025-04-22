@@ -2,7 +2,7 @@ name: Scheduled Job
 
 on:
   schedule:
-    - cron: '* * * * *'  # Запуск каждую минуту
+    - cron: '5 * * * *'  # Запуск каждую минуту
 
 jobs:
   run-on-moscow-time:
