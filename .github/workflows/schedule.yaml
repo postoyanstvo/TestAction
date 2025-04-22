@@ -1,5 +1,4 @@
 name: Test Schedule Workflow
-
 on:
   schedule:
     - cron: '* * * * *'  # Запуск каждую минуту
