@@ -11,6 +11,3 @@ jobs:
       - name: Check current time
         run: |
           echo "Current server time (UTC): $(date)"
-          echo "Current time in Dubai: $(TZ=Asia/Dubai date)"
-          echo "GMT time: $(date -u --rfc-3339=seconds)"
-          echo "Moscow time: $(TZ=Europe/Moscow date)"
