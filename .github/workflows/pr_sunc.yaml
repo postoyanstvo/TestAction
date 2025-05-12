@@ -1,0 +1,17 @@
+name: On PR Sync
+
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Notify about sync
+        run: |
+          echo "Pull request was updated with new commits!"
