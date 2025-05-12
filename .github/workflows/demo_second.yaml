@@ -3,6 +3,7 @@ on:
   pull_request:
     types:
       - synchronize
+      
 jobs:
   print-global-runner-env:
     name: Print Global Runner Env 
