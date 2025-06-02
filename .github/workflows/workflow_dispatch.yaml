@@ -1,6 +1,5 @@
 name: Manual Workflow Dispatch
 
-
 # Определяем триггеры
 on:
   # Запуск по событию workflow_dispatch
