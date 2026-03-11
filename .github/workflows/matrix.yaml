@@ -1,0 +1,72 @@
+name: Test Matrix Job Rerun
+on:
+  workflow_dispatch:
+    inputs:
+      fail_matrix:
+        description: 'Which matrix combination to fail (e.g., ubuntu-18, windows-20)'
+        required: false
+        default: 'ubuntu-18'
+        type: string
+
+jobs:
+  test-matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false  # ⚠️ Важно: продолжать выполнение других комбинаций
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [18, 20]
+        include:
+          - os: ubuntu-latest
+            node: 18
+            test-name: 'ubuntu-18'
+          - os: ubuntu-latest
+            node: 20
+            test-name: 'ubuntu-20'
+          - os: windows-latest
+            node: 18
+            test-name: 'windows-18'
+          - os: windows-latest
+            node: 20
+            test-name: 'windows-20'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Echo Matrix Info
+        run: |
+          echo "🔵 OS: ${{ matrix.os }}"
+          echo "🔵 Node: ${{ matrix.node }}"
+          echo "🔵 Test Name: ${{ matrix.test-name }}"
+          echo "🔵 Run ID: ${{ github.run_id }}"
+          echo "🔵 Attempt: ${{ github.run_attempt }}"
+          echo "🔵 Matrix Key: ${{ matrix.test-name }}"
+        shell: bash
+
+      - name: Simulate Failure
+        if: ${{ matrix.test-name == inputs.fail_matrix }}
+        run: |
+          echo "❌ Simulating failure for ${{ matrix.test-name }}"
+          exit 1
+        shell: bash
+
+      - name: Success Step
+        run: |
+          echo "✅ ${{ matrix.test-name }} passed!"
+          echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        shell: bash
+
+      - name: Create Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrix-${{ matrix.test-name }}-attempt-${{ github.run_attempt }}
+          path: |
+            ${{ github.workspace }}
+          retention-days: 1
+          if-no-files-found: ignore
