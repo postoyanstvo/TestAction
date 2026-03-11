@@ -17,8 +17,6 @@ on:
         required: false
         default: 'true'
         type: boolean
-  push:
-    branches: [main]
 
 env:
   TEST_ID: ${{ github.run_id }}
