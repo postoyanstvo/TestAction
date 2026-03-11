@@ -1,6 +1,22 @@
 name: Test Job Rerun Dependencies
 on:
-  workflow_dispatch:  # Ручной запуск для тестов
+  workflow_dispatch:
+    inputs:
+      fail_job_a:
+        description: 'Fail job_a'
+        required: false
+        default: 'false'
+        type: boolean
+      fail_job_b:
+        description: 'Fail job_b'
+        required: false
+        default: 'false'
+        type: boolean
+      fail_job_c:
+        description: 'Fail job_c (target for rerun)'
+        required: false
+        default: 'true'
+        type: boolean
   push:
     branches: [main]
 
@@ -9,19 +25,19 @@ env:
 
 jobs:
   # ─────────────────────────────────────────────────────
-  # UPSTREAM: Джоба A - независимая (родитель для B)
+  # UPSTREAM: Джоба A - независимая (родитель для C)
   # ─────────────────────────────────────────────────────
   job_a:
     runs-on: ubuntu-latest
     steps:
       - name: Echo Job A
         run: |
-          echo "🔵 Job A executed (UPSTREAM for B)"
+          echo "🔵 Job A executed (UPSTREAM for C)"
           echo "TEST_ID=${{ env.TEST_ID }}"
           echo "ATTEMPT=${{ github.run_attempt }}"
       
       - name: Simulate failure (для тестов)
-        if: ${{ github.event.inputs.fail_job_a == 'true' }}
+        if: ${{ inputs.fail_job_a == true }}
         run: exit 1
       
       - name: Create artifact A
@@ -43,7 +59,7 @@ jobs:
           echo "TEST_ID=${{ env.TEST_ID }}"
       
       - name: Simulate failure (для тестов)
-        if: ${{ github.event.inputs.fail_job_b == 'true' }}
+        if: ${{ inputs.fail_job_b == true }}
         run: exit 1
 
   # ─────────────────────────────────────────────────────
@@ -51,7 +67,7 @@ jobs:
   # ─────────────────────────────────────────────────────
   job_c:
     runs-on: ubuntu-latest
-    needs: [job_a, job_b]  # ⚠️ Зависит от A и B
+    needs: [job_a, job_b]
     steps:
       - name: Echo Job C
         run: |
@@ -61,7 +77,7 @@ jobs:
           echo "Depends on: job_a, job_b"
       
       - name: Simulate failure (для тестов)
-        if: ${{ github.event.inputs.fail_job_c == 'true' }}
+        if: ${{ inputs.fail_job_c == true }}
         run: exit 1
       
       - name: Create artifact C
@@ -72,11 +88,11 @@ jobs:
           retention-days: 1
 
   # ─────────────────────────────────────────────────────
-  # DOWNSTREAM: Джоба D - зависит от C (автоматический перезапуск)
+  # DOWNSTREAM: Джоба D - зависит от C (авто-перезапуск)
   # ─────────────────────────────────────────────────────
   job_d:
     runs-on: ubuntu-latest
-    needs: [job_c]  # ⚠️ Зависит от C (downstream)
+    needs: [job_c]
     steps:
       - name: Echo Job D
         run: |
@@ -93,7 +109,7 @@ jobs:
           retention-days: 1
 
   # ─────────────────────────────────────────────────────
-  # INDEPENDENT: Джоба E - без зависимостей (не затрагивается)
+  # INDEPENDENT: Джоба E - без зависимостей
   # ─────────────────────────────────────────────────────
   job_e:
     runs-on: ubuntu-latest
@@ -103,17 +119,3 @@ jobs:
           echo "⚪ Job E executed (INDEPENDENT)"
           echo "TEST_ID=${{ env.TEST_ID }}"
           echo "Should NOT be affected by C rerun"
-
-inputs:
-  fail_job_a:
-    description: 'Fail job_a'
-    required: false
-    default: 'false'
-  fail_job_b:
-    description: 'Fail job_b'
-    required: false
-    default: 'false'
-  fail_job_c:
-    description: 'Fail job_c (target for rerun)'
-    required: false
-    default: 'true'
